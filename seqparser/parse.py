@@ -1,7 +1,6 @@
 import io
 from typing import Tuple, Union
 
-
 class Parser:
     """
     Base Class for Parsing Algorithms
@@ -76,7 +75,9 @@ class Parser:
 
             while True:
                 rec = self.get_record(f_obj)
-                # TODO: stop the loop
+                # TODO: stop the loop, 
+                if rec is None:  # Stop if no more records
+                    break
                 yield rec
 
     def _get_record(self, f_obj: io.TextIOWrapper) -> Union[Tuple[str, str], Tuple[str, str, str]]:
@@ -94,18 +95,37 @@ class FastaParser(Parser):
     """
     Fasta Specific Parsing.
     """
+    file_path = 'data/test.fa'
     def _get_record(self, f_obj: io.TextIOWrapper) -> Tuple[str, str]:
         """
         TODO: returns the next fasta record as a 2-tuple of (header, sequence)
         """
+    #there is a python method for line by line
+#ssbs
+#https://docs.python.org/3/library/io.html
+        header = f_obj.readline()
+        seq = f_obj.readline()
+        if len(header) == 0:
+            return None 
+        return (header, seq)
+#https://www.w3schools.com/python/ref_file_readline.asp
+
 
 
 class FastqParser(Parser):
     """
     Fastq Specific Parsing 
     """
+    file_path = 'data/test.fq'
     def _get_record(self, f_obj: io.TextIOWrapper) -> Tuple[str, str, str]:
         """
         TODO: returns the next fastq record as a 3-tuple of (header, sequence, quality)
         """
-
+        header = f_obj.readline()
+        seq = f_obj.readline()
+        quality = f_obj.readline()
+        low_quality = f_obj.readline()
+        if len(header) == 0:
+            print("end of file")
+            return None
+        return (header, seq)
